@@ -13,7 +13,13 @@ class PrivateMediaView(PermissionRequiredMixin, DetailView):
     :param file_field: the name of the ``Filefield``
     """
     file_field = None
+    # see :func:`sendfile.sendfile` for available parameters
+    sendfile_options = None
+
+    def get_sendfile_opts(self):
+        return self.sendfile_options or {}
 
     def get(self, request, *args, **kwargs):
         filename = getattr(self.get_object(), self.file_field).path
-        return sendfile(request, filename)
+        sendfile_options = self.get_sendfile_opts()
+        return sendfile(request, filename, **sendfile_options)

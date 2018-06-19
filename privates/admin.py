@@ -8,6 +8,8 @@ from .widgets import PrivateFileWidget
 class PrivateMediaMixin:
     private_media_fields = ()
     private_media_permission_required = None
+    # options passed through to sendfile, as a dict
+    private_media_view_options = None
 
     def get_private_media_fields(self):
         return self.private_media_fields
@@ -20,11 +22,15 @@ class PrivateMediaMixin:
         codename = get_permission_codename('change', opts)
         return "%s.%s" % (opts.app_label, codename)
 
+    def get_private_media_view_options(self, field):
+        return self.private_media_view_options or {}
+
     def get_private_media_view(self, field):
         return PrivateMediaView.as_view(
             model=self.model,
             file_field=field,
-            permission_required=self.get_private_media_permission_required(field)
+            permission_required=self.get_private_media_permission_required(field),
+            sendfile_options=self.get_private_media_view_options(field)
         )
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):

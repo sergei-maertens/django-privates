@@ -16,6 +16,9 @@ __pycache__/
 /.pytest_cache
 /reports
 
+testapp/private_media/
+testapp/privates.db
+
 # IDE's/editors
 .idea/
 /.vscode
