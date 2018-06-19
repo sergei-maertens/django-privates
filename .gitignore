@@ -15,6 +15,8 @@ __pycache__/
 /.tox
 /.pytest_cache
 /reports
+coverage.xml
+junit.xml
 
 testapp/private_media/
 testapp/privates.db

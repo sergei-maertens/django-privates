@@ -11,7 +11,7 @@ all the way through your application.
 :PythonVersion: 3.4, 3.5, 3.6
 :DjangoVersion: 1.11, 2.0
 
-|build-status| |requirements| |coverage|
+|build-status| |requirements| |coverage| |docs|
 
 .. contents::
 
@@ -60,5 +60,9 @@ template discovery):
 .. |coverage| image:: https://codecov.io/gh/sergei-maertens/django-privates/branch/develop/graph/badge.svg
     :target: https://codecov.io/gh/sergei-maertens/django-privates
     :alt: Coverage status
+
+.. |docs| image:: //readthedocs.org/projects/django-privates/badge/?version=latest
+    :target: https://django-privates.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
 
 .. _sendfile: https://pypi.org/project/django-sendfile2/
