@@ -19,6 +19,9 @@ __pycache__/
 testapp/private_media/
 testapp/privates.db
 
+# docs
+docs/_build
+
 # IDE's/editors
 .idea/
 /.vscode

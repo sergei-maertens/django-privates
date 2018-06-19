@@ -39,7 +39,7 @@ Install
 And then add ``privates`` to your ``INSTALLED_APPS`` for admin integration (
 template discovery):
 
-.. code-block:: bash
+.. code-block:: python
 
     INSTALLED_APPS = [
         ...,
