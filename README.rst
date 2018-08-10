@@ -59,7 +59,7 @@ template discovery):
     :target: https://codecov.io/gh/sergei-maertens/django-privates
     :alt: Coverage status
 
-.. |docs| image:: //readthedocs.org/projects/django-privates/badge/?version=latest
+.. |docs| image:: https://readthedocs.org/projects/django-privates/badge/?version=latest
     :target: https://django-privates.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
