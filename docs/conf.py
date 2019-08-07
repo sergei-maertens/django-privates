@@ -165,4 +165,5 @@ todo_include_todos = True
 
 linkcheck_ignore = [
     r'https://img.shields.io',  # known to be slow...
+    r'https://codecov.io',
 ]
