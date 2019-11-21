@@ -65,6 +65,9 @@ To use private media files, the simplest way is to use the model field:
 
 This uses the underlying ``privates.storages.private_media_storage``.
 
+Additionally, there is support for ``ImageField`` through
+``privates.fields.PrivateMediaImageField``.
+
 Admin
 -----
 
