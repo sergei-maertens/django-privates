@@ -5,7 +5,7 @@ Django-privates - private media integrration
 Django-privates makes it easy to work with login-protected ``FileField``\ s,
 all the way through your application.
 
-:Version: 1.1.0
+:Version: 1.2.0
 :Source: https://github.com/sergei-maertens/django-privates
 :Keywords: django, media, private, storage
 

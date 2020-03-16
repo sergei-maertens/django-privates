@@ -12,6 +12,7 @@ Maintenance update, some small features and cleanup
 * Added support for Python 3.8
 * Depends on django-sendfile2 > 0.5, which went through a package rename from
   ``sendfile`` to ``django_sendfile``.
+* Improved hooks to customize representations
 
 1.1.0 (2019-11-21)
 ==================
