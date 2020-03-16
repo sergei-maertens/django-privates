@@ -2,6 +2,17 @@
 Changelog
 =========
 
+1.2.0 (2020-03-16)
+==================
+
+Maintenance update, some small features and cleanup
+
+* Fixed packaging so that ``testapp/`` and ``tests/`` are no longer packaged
+* Dropped support for Django 2.0 and 2.1, added support for Django 3.0
+* Added support for Python 3.8
+* Depends on django-sendfile2 > 0.5, which went through a package rename from
+  ``sendfile`` to ``django_sendfile``.
+
 1.1.0 (2019-11-21)
 ==================
 

@@ -8,14 +8,18 @@ python:
   - "3.5"
   - "3.6"
   - "3.7"
+  - "3.8"
 
 env:
   - DJANGO=1.11
-  - DJANGO=2.1
   - DJANGO=2.2
+  - DJANGO=3.0
 
 matrix:
   fast_finish: true
+  exclude:
+    - { python: "3.5", env: DJANGO=3.0 }
+    - { python: "3.8", env: DJANGO=1.11 }
   include:
     - { python: "3.6", env: TOXENV=isort }
     - { python: "3.6", env: TOXENV=docs }

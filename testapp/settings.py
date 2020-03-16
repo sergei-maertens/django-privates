@@ -51,7 +51,7 @@ TEMPLATES = [
 PRIVATE_MEDIA_ROOT = os.path.join(BASE_DIR, 'private_media')
 PRIVATE_MEDIA_URL = '/protected/'
 
-SENDFILE_BACKEND = 'sendfile.backends.nginx'
+SENDFILE_BACKEND = 'django_sendfile.backends.nginx'
 SENDFILE_ROOT = PRIVATE_MEDIA_ROOT
 SENDFILE_URL = PRIVATE_MEDIA_URL
 

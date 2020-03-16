@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import DetailView
 
-from sendfile import sendfile
+from django_sendfile import sendfile
 
 
 class PrivateMediaView(PermissionRequiredMixin, DetailView):
