@@ -9,6 +9,7 @@ class PrivateMediaMixin:
     private_media_fields = ()
     private_media_permission_required = None
     private_media_view_class = PrivateMediaView
+    private_media_file_widget = PrivateFileWidget
     # options passed through to sendfile, as a dict
     private_media_view_options = None
 
@@ -42,7 +43,8 @@ class PrivateMediaMixin:
             # replace the widget
             view_name = self._get_private_media_view_name(db_field.name)
             # TODO: don't nuke potential other overrides?
-            field.widget = PrivateFileWidget(url_name='admin:%s' % view_name)
+            Widget = self.private_media_file_widget
+            field.widget = Widget(url_name='admin:%s' % view_name)
         return field
 
     def _get_private_media_view_name(self, field):
