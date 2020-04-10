@@ -13,7 +13,10 @@ class PrivateFileWidgetMixin:
         Return value-related substitutions.
         """
         context = super().get_context(name, value, attrs)
-        context["url"] = reverse(self.url_name, kwargs={'pk': value.instance.pk}) if value else ''
+        if hasattr(value, "instance"):
+            context["url"] = reverse(self.url_name, kwargs={'pk': value.instance.pk})
+        else:
+            context["url"] = ""
         context["display_value"] = self.get_display_value(value)
         return context
 
