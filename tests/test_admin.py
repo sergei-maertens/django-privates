@@ -1,13 +1,15 @@
-from django.urls import reverse
 from io import BytesIO
+
+from django.urls import reverse
+
 import pytest
 
 
 @pytest.mark.django_db
 def test_admin_widget_url(admin_client, private_file):
-    url = reverse('admin:testapp_file_change', args=(private_file.pk,))
-    file_url = reverse('admin:testapp_file_file', args=(private_file.pk,))
-    image_url = reverse('admin:testapp_file_image', args=(private_file.pk,))
+    url = reverse("admin:testapp_file_change", args=(private_file.pk,))
+    file_url = reverse("admin:testapp_file_file", args=(private_file.pk,))
+    image_url = reverse("admin:testapp_file_image", args=(private_file.pk,))
 
     response = admin_client.get(url)
     assert file_url in response.rendered_content
@@ -16,23 +18,23 @@ def test_admin_widget_url(admin_client, private_file):
 
 @pytest.mark.django_db
 def test_admin_view(admin_client, private_file):
-    file_url = reverse('admin:testapp_file_file', args=(private_file.pk,))
-    image_url = reverse('admin:testapp_file_image', args=(private_file.pk,))
+    file_url = reverse("admin:testapp_file_file", args=(private_file.pk,))
+    image_url = reverse("admin:testapp_file_image", args=(private_file.pk,))
 
     file_response = admin_client.get(file_url)
     image_response = admin_client.get(image_url)
 
-    assert 'X-Accel-Redirect' in file_response
-    assert 'Content-Type' in file_response
-    assert 'X-Accel-Redirect' in image_response
-    assert 'Content-Type' in image_response
+    assert "X-Accel-Redirect" in file_response
+    assert "Content-Type" in file_response
+    assert "X-Accel-Redirect" in image_response
+    assert "Content-Type" in image_response
 
-    assert file_response['Content-Disposition'] == 'attachment; filename="dummy.txt"'
-    assert image_response['Content-Disposition'] == 'attachment; filename="dummy.png"'
+    assert file_response["Content-Disposition"] == 'attachment; filename="dummy.txt"'
+    assert image_response["Content-Disposition"] == 'attachment; filename="dummy.png"'
 
 
 def test_admin_widget_url_empty_initial(admin_client):
-    url = reverse('admin:testapp_file_add')
+    url = reverse("admin:testapp_file_add")
     response = admin_client.get(url)
 
     assert response.status_code == 200
@@ -40,5 +42,5 @@ def test_admin_widget_url_empty_initial(admin_client):
 
 @pytest.mark.django_db
 def test_admin_widget_url_inmemoryfile(admin_client):
-    url = reverse('admin:testapp_file_add')
+    url = reverse("admin:testapp_file_add")
     response = admin_client.post(url, {"file": BytesIO(b"")}, follow=True)

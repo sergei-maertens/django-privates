@@ -19,5 +19,5 @@ if __name__ == "__main__":
             )
         raise
 
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'testapp.settings')
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "testapp.settings")
     execute_from_command_line(sys.argv)

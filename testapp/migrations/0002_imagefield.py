@@ -8,14 +8,15 @@ import privates.storages
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('testapp', '0001_initial'),
+        ("testapp", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='File',
-            name='image',
+            model_name="File",
+            name="image",
             field=privates.fields.PrivateMediaImageField(
-                storage=privates.storages.PrivateMediaFileSystemStorage(), upload_to=''),
+                storage=privates.storages.PrivateMediaFileSystemStorage(), upload_to=""
+            ),
         ),
     ]

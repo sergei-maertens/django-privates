@@ -11,11 +11,11 @@ class PrivateMediaFileSystemStorage(FileSystemStorage):
 
     def _clear_cached_properties(self, setting, **kwargs):
         super()._clear_cached_properties(setting, **kwargs)
-        if setting == 'PRIVATE_MEDIA_ROOT':
-            self.__dict__.pop('base_location', None)
-            self.__dict__.pop('location', None)
-        elif setting == 'PRIVATE_MEDIA_URL':
-            self.__dict__.pop('base_url', None)
+        if setting == "PRIVATE_MEDIA_ROOT":
+            self.__dict__.pop("base_location", None)
+            self.__dict__.pop("location", None)
+        elif setting == "PRIVATE_MEDIA_URL":
+            self.__dict__.pop("base_url", None)
 
     @cached_property
     def base_location(self):
@@ -23,13 +23,12 @@ class PrivateMediaFileSystemStorage(FileSystemStorage):
 
     @cached_property
     def base_url(self):
-        if self._base_url is not None and not self._base_url.endswith('/'):
-            self._base_url += '/'
+        if self._base_url is not None and not self._base_url.endswith("/"):
+            self._base_url += "/"
         return self._value_or_setting(self._base_url, settings.PRIVATE_MEDIA_URL)
 
 
 class PrivateMediaStorage(LazyObject):
-
     def _setup(self):
         self._wrapped = PrivateMediaFileSystemStorage()
 

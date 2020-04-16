@@ -9,15 +9,28 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='File',
+            name="File",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file', privates.fields.PrivateMediaFileField(storage=privates.storages.PrivateMediaFileSystemStorage(), upload_to='')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "file",
+                    privates.fields.PrivateMediaFileField(
+                        storage=privates.storages.PrivateMediaFileSystemStorage(),
+                        upload_to="",
+                    ),
+                ),
             ],
         ),
     ]

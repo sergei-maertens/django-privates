@@ -1,1 +1,1 @@
-default_app_config = 'privates.apps.PrivatesConfig'
+default_app_config = "privates.apps.PrivatesConfig"

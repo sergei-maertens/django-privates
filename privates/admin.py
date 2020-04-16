@@ -21,7 +21,7 @@ class PrivateMediaMixin:
             return self.private_media_permission_required
 
         opts = self.opts
-        codename = get_permission_codename('change', opts)
+        codename = get_permission_codename("change", opts)
         return "%s.%s" % (opts.app_label, codename)
 
     def get_private_media_view_options(self, field):
@@ -33,7 +33,7 @@ class PrivateMediaMixin:
             model=self.model,
             file_field=field,
             permission_required=self.get_private_media_permission_required(field),
-            sendfile_options=self.get_private_media_view_options(field)
+            sendfile_options=self.get_private_media_view_options(field),
         )
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
@@ -44,14 +44,14 @@ class PrivateMediaMixin:
             view_name = self._get_private_media_view_name(db_field.name)
             # TODO: don't nuke potential other overrides?
             Widget = self.private_media_file_widget
-            field.widget = Widget(url_name='admin:%s' % view_name)
+            field.widget = Widget(url_name="admin:%s" % view_name)
         return field
 
     def _get_private_media_view_name(self, field):
-        name = '%(app_label)s_%(model_name)s_%(field)s' % {
-            'app_label': self.opts.app_label,
-            'model_name': self.opts.model_name,
-            'field': field
+        name = "%(app_label)s_%(model_name)s_%(field)s" % {
+            "app_label": self.opts.app_label,
+            "model_name": self.opts.model_name,
+            "field": field,
         }
         return name
 
@@ -61,10 +61,12 @@ class PrivateMediaMixin:
         extra = []
         for field in self.get_private_media_fields():
             view = self.get_private_media_view(field)
-            extra.append(url(
-                r'^(?P<pk>\d+)/%s/$' % field,
-                self.admin_site.admin_view(view),
-                name=self._get_private_media_view_name(field)
-            ))
+            extra.append(
+                url(
+                    r"^(?P<pk>\d+)/%s/$" % field,
+                    self.admin_site.admin_view(view),
+                    name=self._get_private_media_view_name(field),
+                )
+            )
 
         return extra + default

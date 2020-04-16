@@ -12,6 +12,7 @@ class PrivateMediaView(PermissionRequiredMixin, DetailView):
     :param model: the model class to look up the object
     :param file_field: the name of the ``Filefield``
     """
+
     file_field = None
     # see :func:`sendfile.sendfile` for available parameters
     sendfile_options = None
