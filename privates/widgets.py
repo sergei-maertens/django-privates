@@ -1,3 +1,7 @@
+from typing import Union, Optional
+from django.db.models.fields.files import FieldFile
+from django.core.files.uploadedfile import UploadedFile
+
 from django.contrib.admin.widgets import AdminFileWidget
 from django.urls import reverse
 
@@ -8,13 +12,14 @@ class PrivateFileWidgetMixin:
         self.url_name = kwargs.pop('url_name')
         super().__init__(*args, **kwargs)
 
-    def get_context(self, name, value, attrs):
+    def get_context(self, name: str, value: Optional[Union[FieldFile, UploadedFile]], attrs: dict):
         """
         Return value-related substitutions.
         """
         context = super().get_context(name, value, attrs)
-        context["url"] = reverse(self.url_name, kwargs={'pk': value.instance.pk}) if value else ''
-        context["display_value"] = self.get_display_value(value)
+        if self.is_initial(value):
+            context["url"] = reverse(self.url_name, kwargs={'pk': value.instance.pk})
+            context["display_value"] = self.get_display_value(value)
         return context
 
     def get_display_value(self, value):

@@ -1,5 +1,5 @@
 from django.urls import reverse
-
+from io import BytesIO
 import pytest
 
 
@@ -29,3 +29,16 @@ def test_admin_view(admin_client, private_file):
 
     assert file_response['Content-Disposition'] == 'attachment; filename="dummy.txt"'
     assert image_response['Content-Disposition'] == 'attachment; filename="dummy.png"'
+
+
+def test_admin_widget_url_empty_initial(admin_client):
+    url = reverse('admin:testapp_file_add')
+    response = admin_client.get(url)
+
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_admin_widget_url_inmemoryfile(admin_client):
+    url = reverse('admin:testapp_file_add')
+    response = admin_client.post(url, {"file": BytesIO(b"")}, follow=True)
