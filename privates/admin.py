@@ -1,8 +1,14 @@
-from django.conf.urls import url
+import django
 from django.contrib.auth import get_permission_codename
 
 from .views import PrivateMediaView
 from .widgets import PrivateFileWidget
+
+# django.conf.urls.url is deprecated
+if django.VERSION < (2, 0):
+    from django.conf.urls import url as re_path
+else:
+    from django.urls import re_path
 
 
 class PrivateMediaMixin:
@@ -62,7 +68,7 @@ class PrivateMediaMixin:
         for field in self.get_private_media_fields():
             view = self.get_private_media_view(field)
             extra.append(
-                url(
+                re_path(
                     r"^(?P<pk>\d+)/%s/$" % field,
                     self.admin_site.admin_view(view),
                     name=self._get_private_media_view_name(field),
