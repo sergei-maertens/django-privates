@@ -2,6 +2,13 @@
 Changelog
 =========
 
+1.2.2 (2021-07-23)
+==================
+
+Fixed deprecation message about django.conf.urls (thanks @GerjonM).
+
+Supported Django versions are now 1.11, 2.2 and 3.2.
+
 1.2.0 (2020-03-16)
 ==================
 
