@@ -1,8 +1,6 @@
 from django.conf import settings
 
-from privates.storages import (
-    PrivateMediaFileSystemStorage, private_media_storage
-)
+from privates.storages import PrivateMediaFileSystemStorage, private_media_storage
 from privates.test import temp_private_root
 
 

@@ -1,8 +1,7 @@
 from django.conf import settings
 
-from testapp.models import File
-
 from privates.storages import PrivateMediaStorage
+from testapp.models import File
 
 
 def test_private_media_file_field():
