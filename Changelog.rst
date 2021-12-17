@@ -2,6 +2,20 @@
 Changelog
 =========
 
+1.3.0 (2021-12-17)
+==================
+
+Align supported version with Django LTS. The CI-tested versions are now Django 2.2 and
+3.2.
+
+Django 3.0 and 3.1 probably also still work, but these are end of life and not
+officially supported.
+
+* Dropped Django 1.11 support
+* Added Python 3.9 support
+* Added Python 3.10 support
+* Migrated from Travis CI to Github Action
+
 1.2.2 (2021-07-23)
 ==================
 

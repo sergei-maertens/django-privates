@@ -5,11 +5,11 @@ Django-privates - private media integrration
 Django-privates makes it easy to work with login-protected ``FileField``\ s,
 all the way through your application.
 
-:Version: 1.2.0
+:Version: 1.3.0
 :Source: https://github.com/sergei-maertens/django-privates
 :Keywords: django, media, private, storage
 
-|build-status| |requirements| |coverage| |docs| |python-versions| |django-versions| |pypi-version|
+|build-status| |linting| |coverage| |docs| |python-versions| |django-versions| |pypi-version|
 
 .. contents::
 
@@ -48,12 +48,13 @@ template discovery):
     ]
 
 
-.. |build-status| image:: https://travis-ci.org/sergei-maertens/django-privates.svg?branch=develop
-    :target: https://travis-ci.org/sergei-maertens/django-privates
+.. |build-status| image:: https://github.com/sergei-maertens/django-privates/workflows/Run%20CI/badge.svg
+    :target: https://github.com/sergei-maertens/django-privates/actions?query=workflow%3A%22Run+CI%22
+    :alt: Run CI
 
-.. |requirements| image:: https://requires.io/github/sergei-maertens/django-privates/requirements.svg?branch=develop
-    :target: https://requires.io/github/sergei-maertens/django-privates/requirements/?branch=develop
-    :alt: Requirements status
+.. |linting| image:: https://github.com/sergei-maertens/django-privates/workflows/Code%20quality%20checks/badge.svg
+    :target: https://github.com/sergei-maertens/django-privates/actions?query=workflow%3A%22Code+quality+checks%22
+    :alt: Code linting
 
 .. |coverage| image:: https://codecov.io/gh/sergei-maertens/django-privates/branch/develop/graph/badge.svg
     :target: https://codecov.io/gh/sergei-maertens/django-privates
