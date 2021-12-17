@@ -1,14 +1,8 @@
-import django
 from django.contrib.auth import get_permission_codename
+from django.urls import re_path
 
 from .views import PrivateMediaView
 from .widgets import PrivateFileWidget
-
-# django.conf.urls.url is deprecated
-if django.VERSION < (2, 0):
-    from django.conf.urls import url as re_path
-else:
-    from django.urls import re_path
 
 
 class PrivateMediaMixin:
