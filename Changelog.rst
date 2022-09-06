@@ -2,6 +2,18 @@
 Changelog
 =========
 
+1.4.0 (2022-09-06)
+==================
+
+Periodic maintenance release
+
+* Confirmed support for Django 4.0 and 4.1
+* Dropped support for Django 2.2
+* Dropped support for Python 3.5 and 3.6
+* Updated CI infrastructure
+* Code base is now formatted with black
+* Codebase now exposes type hints (incomplete!)
+
 1.3.0 (2021-12-17)
 ==================
 
