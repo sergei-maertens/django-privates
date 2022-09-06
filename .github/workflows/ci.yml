@@ -26,23 +26,25 @@ jobs:
 
     name: Run the test suite (Python ${{ matrix.python }}, Django ${{ matrix.django }})
 
+    env:
+      PYTHON_VERSION: ${{ matrix.python }}
+      DJANGO: ${{ matrix.django }}
+
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python }}
 
       - name: Install dependencies
-        run: pip install tox codecov
+        run: pip install tox tox-gh-actions
 
       - name: Run tests
-        run: |
-          export TOXENV=py${PYTHON_VERSION/./}-django${DJANGO/./}
-          tox
-          codecov -e TOXENV,DJANGO --file reports/coverage-${TOXENV}.xml
-        env:
-          PYTHON_VERSION: ${{ matrix.python }}
-          DJANGO: ${{ matrix.django }}
+        run: tox
+
+      - uses: codecov/codecov-action@v3
+        with:
+          env_vars: PYTHON_VERSION,DJANGO
 
   publish:
     name: Publish package to PyPI
@@ -52,8 +54,8 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.8'
 
@@ -63,7 +65,7 @@ jobs:
           python setup.py sdist bdist_wheel
 
       - name: Publish a Python distribution to PyPI
-        uses: pypa/gh-action-pypi-publish@v1.4.1
+        uses: pypa/gh-action-pypi-publish@v1.5.1
         with:
           user: __token__
           password: ${{ secrets.PYPI_TOKEN }}
