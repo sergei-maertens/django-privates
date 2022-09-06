@@ -24,8 +24,8 @@ jobs:
       matrix:
         toxenv:
           - isort
-          # - black
-          # - docs
+          - black
+          - docs
           # - flake8
     steps:
       - uses: actions/checkout@v3
