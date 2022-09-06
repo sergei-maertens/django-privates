@@ -1,5 +1,6 @@
 include *.rst
 include LICENSE
+include privates/py.typed
 recursive-include privates *.html
 recursive-include privates *.txt
 recursive-include privates *.po
