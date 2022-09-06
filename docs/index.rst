@@ -44,7 +44,7 @@ Indices and tables
     :target: https://github.com/sergei-maertens/django-privates/actions?query=workflow%3A%22Code+quality+checks%22
     :alt: Code linting
 
-.. |coverage| image:: https://codecov.io/gh/sergei-maertens/django-privates/branch/develop/graph/badge.svg
+.. |coverage| image:: https://codecov.io/gh/sergei-maertens/django-privates/branch/main/graph/badge.svg
     :target: https://codecov.io/gh/sergei-maertens/django-privates
     :alt: Coverage status
 
