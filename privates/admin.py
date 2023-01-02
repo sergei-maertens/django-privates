@@ -7,6 +7,7 @@ from .widgets import PrivateFileWidget
 
 class PrivateMediaMixin:
     private_media_fields = ()
+    private_media_no_download_fields = ()
     private_media_permission_required = None
     private_media_view_class = PrivateMediaView
     private_media_file_widget = PrivateFileWidget
@@ -44,7 +45,11 @@ class PrivateMediaMixin:
             view_name = self._get_private_media_view_name(db_field.name)
             # TODO: don't nuke potential other overrides?
             Widget = self.private_media_file_widget
-            field.widget = Widget(url_name="admin:%s" % view_name)
+            field.widget = Widget(
+                url_name="admin:%s" % view_name,
+                download_allowed=db_field.name
+                not in self.private_media_no_download_fields,
+            )
         return field
 
     def _get_private_media_view_name(self, field):
@@ -60,6 +65,8 @@ class PrivateMediaMixin:
 
         extra = []
         for field in self.get_private_media_fields():
+            if field in self.private_media_no_download_fields:
+                continue
             view = self.get_private_media_view(field)
             extra.append(
                 re_path(

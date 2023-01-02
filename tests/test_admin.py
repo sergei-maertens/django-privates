@@ -1,8 +1,11 @@
 from io import BytesIO
 
 from django.urls import reverse
+from django.urls.exceptions import NoReverseMatch
+from django.utils.translation import gettext_lazy as _
 
 import pytest
+from pyquery import PyQuery as pq
 
 
 @pytest.mark.django_db
@@ -44,3 +47,31 @@ def test_admin_widget_url_empty_initial(admin_client):
 def test_admin_widget_url_inmemoryfile(admin_client):
     url = reverse("admin:testapp_file_add")
     response = admin_client.post(url, {"file": BytesIO(b"")}, follow=True)
+
+
+@pytest.mark.django_db
+def test_admin_no_download_field(admin_client, private_file):
+    """Assert that there is no view for `private_media_no_download_fields`
+    but the relevant filename is still visible in the response"""
+
+    url = reverse("admin:testapp_file2_change", args=(private_file.pk,))
+
+    response = admin_client.get(url)
+
+    # OK: file field is not included in `private_media_no_download_fields`
+    file_url = reverse("admin:testapp_file2_file", args=(private_file.pk,))
+    assert file_url in response.rendered_content
+
+    # Fail: image field is included in `private_media_no_download_fields`
+    with pytest.raises(NoReverseMatch):
+        reverse("admin:testapp_file2_image", args=(private_file.pk,))
+
+    # display_value of img element is still visible
+    html = response.content.decode("utf-8")
+    doc = pq(html)
+    uploads = doc(".file-upload")
+    img = uploads[1]
+
+    display_value = img.text.strip()
+
+    assert display_value == _("Currently: %s") % private_file.image.name
