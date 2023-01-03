@@ -30,7 +30,7 @@ copyright = "2018, Sergei Maertens"
 author = "Sergei Maertens"
 
 # The full version, including alpha/beta/rc tags
-release = "1.4.0"
+release = "1.5.0"
 
 
 # -- General configuration ---------------------------------------------------
