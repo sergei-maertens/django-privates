@@ -2,6 +2,16 @@
 Changelog
 =========
 
+1.5.0 (2023-01-03)
+==================
+
+Feature release
+
+* Added ``privates.admin.PrivateMediaMixin.private_media_no_download_fields`` so admin
+  classes can mark fields for which no file download URL/view should be generated
+* Specifying ``privates.admin.PrivateMediaMixin.private_media_fields`` is now optional,
+  available private media fields are now automatically discovered.
+
 1.4.0 (2022-09-06)
 ==================
 
