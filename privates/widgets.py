@@ -9,6 +9,7 @@ from django.urls import reverse
 class PrivateFileWidgetMixin:
     def __init__(self, *args, **kwargs):
         self.url_name = kwargs.pop("url_name")
+        self.download_allowed = kwargs.pop("download_allowed")
         super().__init__(*args, **kwargs)
 
     def get_context(
@@ -19,7 +20,14 @@ class PrivateFileWidgetMixin:
         """
         context = super().get_context(name, value, attrs)
         if self.is_initial(value):
-            context["url"] = reverse(self.url_name, kwargs={"pk": value.instance.pk})
+            if self.download_allowed:
+                context["url"] = reverse(
+                    self.url_name, kwargs={"pk": value.instance.pk}
+                )
+                context["download_allowed"] = True
+            else:
+                context["url"] = ""
+                context["download_allowed"] = False
             context["display_value"] = self.get_display_value(value)
         return context
 
