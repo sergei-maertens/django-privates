@@ -1,23 +1,38 @@
+from typing import Optional, Sequence, Type
+
 from django.contrib.auth import get_permission_codename
+from django.db import models
 from django.urls import re_path
 
+from .fields import PrivateMediaFieldMixin
 from .views import PrivateMediaView
 from .widgets import PrivateFileWidget
 
 
 class PrivateMediaMixin:
-    private_media_fields = ()
-    private_media_no_download_fields = ()
-    private_media_permission_required = None
+    private_media_fields: Optional[Sequence[str]] = None
+    private_media_no_download_fields: Sequence[str] = ()
+    private_media_permission_required: Optional[str] = None
     private_media_view_class = PrivateMediaView
     private_media_file_widget = PrivateFileWidget
     # options passed through to sendfile, as a dict
     private_media_view_options = None
 
-    def get_private_media_fields(self):
-        return self.private_media_fields
+    model: Type[models.Model]
 
-    def get_private_media_permission_required(self, field: str):
+    def get_private_media_fields(self):
+        if self.private_media_fields is not None:
+            return self.private_media_fields
+
+        # introspect model fields to automatically figure out the field names
+        field_names = [
+            field.name
+            for field in self.model._meta.get_fields()
+            if isinstance(field, PrivateMediaFieldMixin)
+        ]
+        return field_names
+
+    def get_private_media_permission_required(self, field: str) -> str:
         if self.private_media_permission_required:
             return self.private_media_permission_required
 

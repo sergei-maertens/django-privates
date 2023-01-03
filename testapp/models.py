@@ -13,3 +13,8 @@ class File2(File):
 
     class Meta:
         proxy = True
+
+
+class File3(File):
+    class Meta:
+        proxy = True
