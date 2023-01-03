@@ -1,5 +1,7 @@
 import os
 
+USE_TZ = True
+
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 SECRET_KEY = "so-secret-i-cant-believe-you-are-looking-at-this"
@@ -10,6 +12,8 @@ DATABASES = {
         "NAME": os.path.join(BASE_DIR, "privates.db"),
     }
 }
+
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 INSTALLED_APPS = [
     "django.contrib.contenttypes",
