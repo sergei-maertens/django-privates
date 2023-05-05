@@ -7,6 +7,9 @@ class PrivateMediaFileSystemStorage(FileSystemStorage):
     """
     Storage that puts files in the private media folder that isn't
     globally available.
+
+    * ``settings.PRIVATE_MEDIA_ROOT`` is used to determine where to write the files
+    * ``settings.PRIVATE_MEDIA_URL`` is the internal URL used for files.
     """
 
     def _clear_cached_properties(self, setting, **kwargs):
@@ -29,8 +32,15 @@ class PrivateMediaFileSystemStorage(FileSystemStorage):
 
 
 class PrivateMediaStorage(LazyObject):
+    """
+    Lazily initialized :class:`PrivateMediaFileSystemStorage`
+    """
+
     def _setup(self):
         self._wrapped = PrivateMediaFileSystemStorage()
 
 
 private_media_storage = PrivateMediaStorage()
+"""
+A default (lazy) private media storage, configured via Django settings.
+"""

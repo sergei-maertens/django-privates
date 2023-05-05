@@ -5,20 +5,21 @@ Quickstart
 Installation
 ============
 
-Install from PyPI with pip:
+#. Install from PyPI with pip:
 
 .. code-block:: bash
 
     pip install django-privates
 
-And add the app to your ``INSTALLED_APPS`` for admin integration:
+
+#. Add the app to your ``INSTALLED_APPS`` for admin integration:
 
 .. code-block:: python
 
     INSTALLED_APPS = [
         ...
 
-        'privates',
+        "privates",
 
         ...
     ]
@@ -28,11 +29,13 @@ Settings
 
 You need to set the following settings:
 
-* ``PRIVATE_MEDIA_ROOT``: equivalent of ``MEDIA_ROOT`` - the base location
-  where private media files will be saved.
+* ``PRIVATE_MEDIA_ROOT``: private equivalent of ``MEDIA_ROOT`` - the base location
+  where private media files will be stored.
 
-* ``PRIVATE_MEDIA_URL``: equivalent of ``MEDIA_URL``. Note that your webserver
-  must be configured appropriately for this, see the `sendfile`_ documentation.
+* ``PRIVATE_MEDIA_URL``: private equivalent of ``MEDIA_URL``. Note that your webserver
+  must be configured appropriately for this, see the `sendfile`_ documentation. Your
+  webserver may **not** directly serve these URLs, otherwise files can be downloaded
+  without authentication.
 
 * ``SENDFILE_BACKEND``: depends on your webserver, see the `sendfile`_
   documentation.
@@ -41,32 +44,37 @@ You need to set the following settings:
 
 * ``SENDFILE_URL``: should be set to ``PRIVATE_MEDIA_URL``.
 
-Usage
-=====
+URLs
+----
+
+No URLs need to be configured. However, for development, you likely want to serve the
+private media file uploads with Django. This can be achieved via settings:
+
+.. code-block:: python
+
+    SENDFILE_BACKEND = "django_sendfile.backends.development"
+
+Defining model fields and admin integration
+===========================================
 
 Models
 ------
 
-To use private media files, the simplest way is to use the model field:
+The simplest way is to use the model field, which is a drop-in replacement of Django's
+``django.db.models.FileField``.
 
 .. code-block:: python
 
     from django.db import models
 
-    from privates.fields import PrivateMediaFileField
+    from privates.fields import PrivateMediaFileField, PrivateMediaImageField
 
 
-    class Invoice(models.Model):
-        ...
-
+    class IDDocument(models.Model):
         pdf = PrivateMediaFileField(blank=True)
+        mugshot = PrivateMediaImageField(upload_to="mugshots/%Y/")
 
-        ...
-
-This uses the underlying ``privates.storages.private_media_storage``.
-
-Additionally, there is support for ``ImageField`` through
-``privates.fields.PrivateMediaImageField``.
+This uses the underlying :data:`privates.storages.private_media_storage`.
 
 Admin
 -----
@@ -87,7 +95,7 @@ permission checks.
 
     @admin.register(Invoice)
     class InvoiceAdmin(PrivateMediaMixin, admin.ModelAdmin):
-        private_media_fields = ('pdf',)
+        pass
 
 
 By default, this mixin requires you to have the ``<applabel>.can_change_<model>``
@@ -95,24 +103,40 @@ permission.
 
 Attributes:
 
-* ``private_media_fields``: list or tuple of field names that should be treated
-  as private media fields.
+* :attr:`privates.admin.PrivateMediaMixin.private_media_permission_required`:
+  (custom) permission to check instead of the default ``<applabel>.can_change_<model>``
 
-* ``private_media_permission_required``: (custom) permission to check instead of
-  the default ``<applabel>.can_change_<model>``
+* :attr:`privates.admin.PrivateMediaMixin.private_media_view_options`: optional
+  arguments to forward to the ``sendfile.sendfile`` function.
 
-* ``private_media_view_options``: optional arguments to pass down to the
-  ``sendfile.sendfile`` function.
+Serving file contents
+=====================
 
+The private media files still need to be served to authorized users. The process for
+this is roughly:
 
-Views
------
+#. Define a view, which:
+
+    #. Checks the user permissions
+    #. Looks up the requested model instance
+    #. Look up the relevant file field of the model
+    #. Extract the path on-disk of the file
+    #. Return a response which contains the file path information in a format the
+       webserver understands
+    #. Let the webserver (nginx, apache...) serve the file as efficiently as possible
+
+#. Hook up the view to a URL in your ``urls.py``
+#. Expose the download button with a simple anchor tag URL or button action in your
+   template(s)
+
+Generic view
+------------
 
 Django Privates ships with a built in permission-check view, used by the admin
-integration. It's suitable to be used standalone.
+integration. You are encouraged to re-use this.
 
 It's built on top of ``django.contrib.auth.mixins.PermissionRequiredMixin``
-and ``django.view.generic.DetailView``, so the methods/attributes of these
+and ``django.views.generic.DetailView``, so the methods/attributes of these
 base classes are available.
 
 .. code-block:: python
@@ -122,12 +146,32 @@ base classes are available.
 
     class InvoicePDFView(PrivateMediaView):
         queryset = Invoice.objects.all()
-        file_field = 'pdf'
-        permission_required = 'applabel.can_change_invoice'
+        file_field = "pdf"
+        permission_required = "applabel.can_change_invoice"
 
+Custom views
+------------
 
-Tests
------
+You can also easily serve file contents in regular views and/or djangorestframework
+endpoints, for example:
+
+.. code-block:: python
+
+    from django_sendfile import sendfile
+    from rest_framework import permissions
+    from rest_framework.generics import GenericAPIView
+
+    class DownloadFileView(GenericAPIView):
+        queryset = IDDocument.objects.all()
+        permission_classes = (permissions.IsAuthenticated,)
+
+        def get(self, request, *args, **kwargs):
+            instance = self.get_object()  # the get_object methods performs permission checks
+            filepath = instance.pdf.path
+            return sendfile(request, path)
+
+Testing tools
+=============
 
 To isolate tests, you should clean up any uploaded files generated during
 tests. There is a wrapper around ``django.test.override_settings`` available

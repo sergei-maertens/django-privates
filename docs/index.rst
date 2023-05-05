@@ -6,27 +6,36 @@
 Welcome to Django Privates's documentation!
 ===========================================
 
+Simple private media integration for Django.
+
 |build-status| |linting| |coverage|
 
 |python-versions| |django-versions| |pypi-version|
 
-Django-privates makes it easy to work with login-protected FileFields,
-all the way through your application.
+Django supports file uploads for user-generated content out of the box, which is
+typically *public* - think of images, videos...
+
+However, often you want to expose files only to correctly authenticated users because
+they have a sensitive nature, for example invoice PDFs or tenant-specific documents.
+
+django-privates achieves the latter while being as convenient as Django's core
+``FileField`` and derivatives.
 
 Features
 ========
 
-* Default private media storage, configurable via settings
-* Model field using the default storage
+* Provides a default private media storage, configurable via settings
+* Private model field variants for ``FileField`` and ``ImageField``
 * Easy admin integration
-* File serving through `sendfile`_ (supports nginx, apache, runserver,...)
+* Performant file serving through `sendfile`_ (supports nginx, apache, runserver,...)
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    quickstart
-
+   examples
+   reference
 
 
 Indices and tables

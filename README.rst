@@ -10,9 +10,10 @@ What does it do?
 ================
 
 Django supports file uploads for user-generated content out of the box, which is
-typically *public* - think of images, videos... However, often you want to expose
-files only to correctly authenticated users because they have a sensitive nature, for
-example invoice PDFs or tenant-specific documents.
+typically *public* - think of images, videos...
+
+However, often you want to expose files only to correctly authenticated users because
+they have a sensitive nature, for example invoice PDFs or tenant-specific documents.
 
 django-privates achieves the latter while being as convenient as Django's core
 ``FileField`` and derivatives.
