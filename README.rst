@@ -1,51 +1,26 @@
-============================================
-Django-privates - private media integrration
-============================================
+===============
+Django-privates
+===============
 
-Django-privates makes it easy to work with login-protected ``FileField``\ s,
-all the way through your application.
-
-:Version: 2.0.0
-:Source: https://github.com/sergei-maertens/django-privates
-:Keywords: django, media, private, storage
+Simple private media integration for Django.
 
 |build-status| |linting| |coverage| |docs| |python-versions| |django-versions| |pypi-version|
 
-.. contents::
+What does it do?
+================
 
-.. section-numbering::
+Django supports file uploads for user-generated content out of the box, which is
+typically *public* - think of images, videos... However, often you want to expose
+files only to correctly authenticated users because they have a sensitive nature, for
+example invoice PDFs or tenant-specific documents.
 
-Features
-========
+django-privates achieves the latter while being as convenient as Django's core
+``FileField`` and derivatives.
 
-* Default private media storage, configurable via settings
-* Model field using the default storage
-* Easy admin integration
-* File serving through `sendfile`_ (supports nginx, apache, runserver,...)
+Usage
+=====
 
-
-Installation
-============
-
-Install
--------
-
-.. code-block:: bash
-
-    pip install django-privates
-
-And then add ``privates`` to your ``INSTALLED_APPS`` for admin integration (
-template discovery):
-
-.. code-block:: python
-
-    INSTALLED_APPS = [
-        ...,
-
-        'privates',
-
-        ...
-    ]
+The installation and usage `documentation`_ is hosted on ReadTheDocs.
 
 
 .. |build-status| image:: https://github.com/sergei-maertens/django-privates/workflows/Run%20CI/badge.svg
@@ -71,4 +46,4 @@ template discovery):
 .. |pypi-version| image:: https://img.shields.io/pypi/v/django-privates.svg
     :target: https://pypi.org/project/django-privates/
 
-.. _sendfile: https://pypi.org/project/django-sendfile2/
+.. _documentation: https://django-privates.readthedocs.io/
