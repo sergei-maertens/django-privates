@@ -2,6 +2,14 @@
 Changelog
 =========
 
+2.0.0-post1 (2024-03-01)
+========================
+
+* Added mypy type checking
+* Updated type annotations to align with django-stubs for downstream
+  projects/packages
+* Confirmed Django 4.2 support
+
 2.0.0 (2023-05-05)
 ==================
 
