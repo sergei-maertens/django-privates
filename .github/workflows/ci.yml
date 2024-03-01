@@ -15,11 +15,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ['3.8', '3.9', '3.10', '3.11']
+        python: ['3.8', '3.9', '3.10']
         django: ['3.2', '4.1', '4.2']
         include:
           - python: '3.11'
-            django: ['4.1', '4.2']
+            django: '4.1'
+          - python: '3.11'
+            django: '4.2'
 
     name: Run the test suite (Python ${{ matrix.python }}, Django ${{ matrix.django }})
 
