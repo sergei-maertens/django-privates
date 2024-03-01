@@ -1,6 +1,7 @@
 from typing import Optional, Sequence, Type
 
 import django.db.models.options
+from django.contrib.admin import AdminSite
 from django.contrib.auth import get_permission_codename
 from django.db import models
 from django.urls import re_path
@@ -39,6 +40,7 @@ class PrivateMediaMixin:
     # options passed through to sendfile, as a dict
     private_media_view_options: Optional[dict] = None
 
+    admin_site: AdminSite
     model: Type[models.Model]
     opts: django.db.models.options.Options
 
@@ -99,7 +101,7 @@ class PrivateMediaMixin:
         )
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
-        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)  # type: ignore
         private_media_fields = self.get_private_media_fields()
         if db_field.name in private_media_fields:
             # replace the widget
@@ -122,7 +124,7 @@ class PrivateMediaMixin:
         return name
 
     def get_urls(self):
-        default = super().get_urls()
+        default = super().get_urls()  # type: ignore
 
         extra = []
         for field in self.get_private_media_fields():

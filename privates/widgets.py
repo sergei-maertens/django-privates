@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Any, Dict, Optional, Union
 
 from django.contrib.admin.widgets import AdminFileWidget
 from django.core.files.uploadedfile import UploadedFile
@@ -13,14 +13,18 @@ class PrivateFileWidgetMixin:
         super().__init__(*args, **kwargs)
 
     def get_context(
-        self, name: str, value: Optional[Union[FieldFile, UploadedFile]], attrs: dict
+        self,
+        name: str,
+        value: Optional[Union[FieldFile, UploadedFile]],
+        attrs: Optional[Dict[str, Any]],
     ):
         """
         Return value-related substitutions.
         """
-        context = super().get_context(name, value, attrs)
-        if self.is_initial(value):
+        context = super().get_context(name, value, attrs)  # type: ignore
+        if self.is_initial(value):  # type: ignore
             if self.download_allowed:
+                assert isinstance(value, FieldFile)
                 context["url"] = reverse(
                     self.url_name, kwargs={"pk": value.instance.pk}
                 )
