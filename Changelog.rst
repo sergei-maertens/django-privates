@@ -2,7 +2,7 @@
 Changelog
 =========
 
-2.0.0-post1 (2024-03-01)
+2.0.0.post1 (2024-03-01)
 ========================
 
 * Added mypy type checking
