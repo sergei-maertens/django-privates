@@ -1,5 +1,3 @@
-from typing import Optional
-
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import DetailView
 
@@ -25,7 +23,7 @@ class PrivateMediaView(PermissionRequiredMixin, DetailView):
 
     The path (on-disk) of the file is passed along to :func:`django_sendfile.sendfile`.
     """
-    sendfile_options: Optional[dict] = None
+    sendfile_options: dict | None = None
     """
     Additional options for :func:`django_sendfile.sendfile`.
     """

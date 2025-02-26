@@ -1,4 +1,4 @@
-from typing import Generic, Optional, Sequence, Type, TypeVar
+from typing import Generic, Sequence, TypeVar
 
 import django.db.models.options
 from django.contrib.admin import AdminSite
@@ -24,7 +24,7 @@ class PrivateMediaMixin(Generic[_ModelT]):
     in the admin URL configuration (automatically).
     """
 
-    private_media_fields: Optional[Sequence[str]] = None
+    private_media_fields: Sequence[str] | None = None
     private_media_no_download_fields: Sequence[str] = tuple()
     """
     A list of field names for which downloads are forbidden.
@@ -33,17 +33,17 @@ class PrivateMediaMixin(Generic[_ModelT]):
     custom widget. You can block this by specifying the name of the field(s) that should
     only be writable and not downloadable.
     """
-    private_media_permission_required: Optional[str] = None
+    private_media_permission_required: str | None = None
     private_media_view_class = PrivateMediaView
     """
     The Django view class to use for private media field content download views.
     """
     private_media_file_widget = PrivateFileWidget
     # options passed through to sendfile, as a dict
-    private_media_view_options: Optional[dict] = None
+    private_media_view_options: dict | None = None
 
     admin_site: AdminSite
-    model: Type[_ModelT]
+    model: type[_ModelT]
     opts: django.db.models.options.Options
 
     def get_private_media_fields(self) -> Sequence[str]:

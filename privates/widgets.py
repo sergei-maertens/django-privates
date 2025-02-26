@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
 from django.contrib.admin.widgets import AdminFileWidget
 from django.core.files.uploadedfile import UploadedFile
@@ -15,8 +15,8 @@ class PrivateFileWidgetMixin:
     def get_context(
         self,
         name: str,
-        value: Optional[Union[FieldFile, UploadedFile]],
-        attrs: Optional[Dict[str, Any]],
+        value: FieldFile | UploadedFile | None,
+        attrs: dict[str, Any] | None,
     ):
         """
         Return value-related substitutions.
