@@ -6,13 +6,8 @@ on:
     branches:
       - main
     tags:
-    paths:
-      - '**.py'
-      - .github/workflows/code_quality.yml
+      - '*'
   pull_request:
-    paths:
-      - '**.py'
-      - .github/workflows/code_quality.yml
   workflow_dispatch:
 
 jobs:

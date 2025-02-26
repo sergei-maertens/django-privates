@@ -1,0 +1,130 @@
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-privates"
+version = "3.0.0-dev.0"
+description = "Simple private media integration for Django"
+authors = [
+    {name = "Sergei Maertens", email = "info@regex-it.nl"}
+]
+readme = "README.rst"
+license = {file = "LICENSE"}
+keywords = ["django", "media", "private", "storage"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Django",
+    "Framework :: Django :: 4.2",
+    "Intended Audience :: Developers",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "django>=4.2",
+    "django-sendfile2>=0.5"
+]
+
+[project.urls]
+Homepage = "https://github.com/sergei-maertens/django-privates"
+Documentation = "https://django-privates.readthedocs.io/en/latest/"
+"Bug Tracker" = "https://github.com/sergei-maertens/django-privates/issues"
+"Source Code" = "https://github.com/sergei-maertens/django-privates"
+
+[project.optional-dependencies]
+tests = [
+    "Pillow",
+    "pytest",
+    "pytest-pythonpath",
+    "pytest-django",
+    "pytest-cov",
+    "tox",
+    "pyquery",
+    "isort",
+    "black",
+    "django-stubs[compatible-mypy]",
+]
+docs = [
+    "sphinx",
+    "sphinx-rtd-theme",
+]
+release = [
+    "bump-my-version",
+]
+
+[tool.setuptools.packages.find]
+include = ["privates*"]
+namespaces = true
+
+[tool.isort]
+profile = "black"
+combine_as_imports = true
+skip = ["env", ".tox", ".history", ".eggs"]
+known_django = "django"
+known_first_party="privates"
+sections=["FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+DJANGO_SETTINGS_MODULE = "testapp.settings"
+
+[tool.bumpversion]
+current_version = "3.0.0-dev.0"
+files = [
+    {filename = "pyproject.toml", search = "^version = \"{current_version}\""},
+    {filename = "docs/conf.py"},
+]
+parse = """(?x)
+    (?P<major>0|[1-9]\\d*)\\.
+    (?P<minor>0|[1-9]\\d*)\\.
+    (?P<patch>0|[1-9]\\d*)
+    (?:
+        -                             # dash separator for pre-release section
+        (?P<pre_l>[a-zA-Z-]+)\\.      # pre/post-release label
+        (?P<pre_n>0|[1-9]\\d*)        # pre/post-release version number
+    )?                                # pre/post-release section is optional
+"""
+serialize = [
+    "{major}.{minor}.{patch}-{pre_l}.{pre_n}",
+    "{major}.{minor}.{patch}",
+]
+[tool.bumpversion.parts.pre_l]
+values = ["dev", "beta", "rc", "post"]
+optional_value = "post"
+
+
+[tool.coverage.run]
+branch = true
+source = ["privates"]
+omit = [
+    # migrations run while django initializes the test db
+    "*/migrations/*",
+    "testapp/*",
+    "tests/*",
+]
+
+[tool.coverage.report]
+exclude_also = [
+    "if (typing\\.)?TYPE_CHECKING:",
+    "@(typing\\.)?overload",
+    "class .*\\(.*Protocol.*\\):",
+    "@(abc\\.)?abstractmethod",
+    "raise NotImplementedError",
+    "\\.\\.\\.",
+]
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+
+[tool.django-stubs]
+django_settings_module = "testapp.settings"
+
+[[tool.mypy.overrides]]
+module = "django_sendfile"
+ignore_missing_imports = true
