@@ -75,3 +75,19 @@ def test_admin_no_download_field(admin_client, private_file):
     display_value = img.text.strip()
 
     assert display_value == _("Currently: %s") % private_file.image.name
+
+
+@pytest.mark.django_db
+def test_admin_readonly_field(admin_client, private_file):
+    """
+    Assert that readonly files have the correct download URL.
+    """
+    url = reverse("admin:testapp_file4_change", args=(private_file.pk,))
+    change_page = admin_client.get(url)
+    assert change_page.status_code == 200
+    html = change_page.content.decode("utf-8")
+    doc = pq(html)
+    download_link = doc.find(".readonly a").eq(0)
+    assert download_link.attr("href") == reverse(
+        "admin:testapp_file_file", args=(private_file.pk,)
+    )

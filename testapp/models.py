@@ -18,3 +18,8 @@ class File2(File):
 class File3(File):
     class Meta:
         proxy = True
+
+
+class File4(File):
+    class Meta:
+        proxy = True
