@@ -1,5 +1,7 @@
 import os
 
+DEBUG = True
+
 USE_TZ = True
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -19,6 +21,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.auth",
     "django.contrib.messages",
+    "django.contrib.staticfiles",
     "django.contrib.sessions",
     "django.contrib.admin",
     "privates",
@@ -50,6 +53,8 @@ TEMPLATES = [
         },
     },
 ]
+
+STATIC_URL = "static/"
 
 PRIVATE_MEDIA_ROOT = os.path.join(BASE_DIR, "private_media")
 PRIVATE_MEDIA_URL = "/protected/"
