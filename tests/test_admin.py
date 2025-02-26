@@ -47,6 +47,7 @@ def test_admin_widget_url_empty_initial(admin_client):
 def test_admin_widget_url_inmemoryfile(admin_client):
     url = reverse("admin:testapp_file_add")
     response = admin_client.post(url, {"file": BytesIO(b"")}, follow=True)
+    assert response.status_code == 200
 
 
 @pytest.mark.django_db
@@ -89,5 +90,5 @@ def test_admin_readonly_field(admin_client, private_file):
     doc = pq(html)
     download_link = doc.find(".readonly a").eq(0)
     assert download_link.attr("href") == reverse(
-        "admin:testapp_file_file", args=(private_file.pk,)
+        "admin:testapp_file4_file", args=(private_file.pk,)
     )
