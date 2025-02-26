@@ -2,6 +2,23 @@
 Changelog
 =========
 
+3.0.0 (2025-02-26)
+==================
+
+Maintenance and bugfix release
+
+**Breaking changes 💥**
+
+* Dropped support for Python 3.8 and 3.9
+* Dropped support for Django 3.2 and 4.1
+
+**Other changes**
+
+* [#10] Fixed incorrect donwload link being shown for readonly private media fields in
+  the admin.
+* Confirmed support for Python 3.11 and 3.12.
+* The package is now published via Github Trusted Publishers.
+
 2.0.0.post1 (2024-03-01)
 ========================
 
