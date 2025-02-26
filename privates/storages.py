@@ -12,6 +12,9 @@ class PrivateMediaFileSystemStorage(FileSystemStorage):
     * ``settings.PRIVATE_MEDIA_URL`` is the internal URL used for files.
     """
 
+    _location: str | None
+    _base_url: str | None
+
     def _clear_cached_properties(self, setting, **kwargs):
         super()._clear_cached_properties(setting, **kwargs)
         if setting == "PRIVATE_MEDIA_ROOT":
