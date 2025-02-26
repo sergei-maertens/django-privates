@@ -15,19 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ['3.8', '3.9', '3.10']
-        django: ['3.2', '4.1', '4.2']
-        include:
-          - python: '3.11'
-            django: '4.1'
-          - python: '3.11'
-            django: '4.2'
+        python: ['3.10', '3.11', '3.12']
+        django: ['4.2']
 
     name: Run the test suite (Python ${{ matrix.python }}, Django ${{ matrix.django }})
-
-    env:
-      PYTHON_VERSION: ${{ matrix.python }}
-      DJANGO: ${{ matrix.django }}
 
     steps:
       - uses: actions/checkout@v4
@@ -40,11 +31,14 @@ jobs:
 
       - name: Run tests
         run: tox
+        env:
+          PYTHON_VERSION: ${{ matrix.python }}
+          DJANGO: ${{ matrix.django }}
 
-      - uses: codecov/codecov-action@v4
+      - name: Publish coverage report
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          env_vars: PYTHON_VERSION,DJANGO
 
   publish:
     name: Publish package to PyPI
