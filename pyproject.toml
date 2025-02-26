@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "django-privates"
-version = "2.0.0.post1"
+version = "3.0.0-dev.0"
 description = "Simple private media integration for Django"
 authors = [
     {name = "Sergei Maertens", email = "info@regex-it.nl"}
@@ -75,9 +75,9 @@ testpaths = ["tests"]
 DJANGO_SETTINGS_MODULE = "testapp.settings"
 
 [tool.bumpversion]
-current_version = "2.0.0-post1"
+current_version = "3.0.0-dev.0"
 files = [
-    {filename = "pyproject.toml"},
+    {filename = "pyproject.toml", search = "^version = \"{current_version}\""},
     {filename = "docs/conf.py"},
 ]
 parse = """(?x)
