@@ -1,6 +1,38 @@
-from django.db.models import FileField, ImageField
+from __future__ import annotations
+
+from django.db.models import FileField, ImageField, Model
+from django.db.models.fields.files import FieldFile, ImageFieldFile
+from django.urls import reverse
 
 from .storages import private_media_storage
+
+
+class PrivateMediaFieldFileMixin:
+    instance: Model
+
+    @property
+    def url(self) -> str:
+        django_url = super().url  # type: ignore
+
+        readonly_fields = getattr(self.instance, "_private_media_readonly_fields", None)
+        model_admin = getattr(self.instance, "_private_media_model_admin", None)
+        if not readonly_fields or not model_admin:
+            return django_url
+
+        field_name = self.field.name  # type: ignore
+        if field_name not in readonly_fields:
+            return django_url
+
+        url_name = f"admin:{model_admin._get_private_media_view_name(field_name)}"
+        return reverse(url_name, kwargs={"pk": self.instance.pk})
+
+
+class PrivateMediaFieldFile(PrivateMediaFieldFileMixin, FieldFile):
+    pass
+
+
+class PrivateMediaImageFieldFile(PrivateMediaFieldFileMixin, ImageFieldFile):
+    pass
 
 
 class PrivateMediaFieldMixin:
@@ -25,8 +57,12 @@ class PrivateMediaFileField(PrivateMediaFieldMixin, FileField):
     A generic private media file field.
     """
 
+    attr_class = PrivateMediaFieldFile
+
 
 class PrivateMediaImageField(PrivateMediaFieldMixin, ImageField):
     """
     A private media image field.
     """
+
+    attr_class = PrivateMediaImageFieldFile

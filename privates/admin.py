@@ -142,3 +142,31 @@ class PrivateMediaMixin(Generic[_ModelT]):
             )
 
         return extra + default
+
+    def get_object(self, request, object_id, from_field=None):
+        """
+        Override to replace the readonly private media file field accessors.
+
+        See issue #10 - injecting the private media (admin specific) URLs for readonly
+        fields is not possible since all the form field machinery gets bypassed, and
+        a bunch of helpers/utilities that are private Django API are used to render a
+        form, fieldsets, field lines and ultimately the field. This call chain ends up
+        in ``django.db.models.fields.file.FieldFile.url``. We cannot blindly always
+        return the admin URL at the model level, since these URLs should not be exposed
+        to non-admin users.
+
+        So, in the admin context we instead taint the model instance so that our custom
+        ``FieldFile`` class/attr_class can introspect this and conditionally build up
+        the correct URL.
+        """
+        obj = super().get_object(request, object_id, from_field=from_field)  # type: ignore
+
+        readonly_fields = self.get_readonly_fields(request, obj=obj)  # type: ignore
+        obj._private_media_readonly_fields = [
+            field
+            for field in self.get_private_media_fields()
+            if field in readonly_fields
+        ]
+        obj._private_media_model_admin = self
+
+        return obj
