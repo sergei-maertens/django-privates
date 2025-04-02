@@ -2,6 +2,16 @@
 Changelog
 =========
 
+3.1.0 (2025-04-02)
+==================
+
+Small feature release to confirm support for Django 5.2
+
+* Confirmed support for Django 5.2
+* Confirmed support for Python 3.13
+* Switched out black and isort for ruff
+* Replaced legacy typing syntax with 3.10+ compatible syntax.
+
 3.0.0 (2025-02-26)
 ==================
 
