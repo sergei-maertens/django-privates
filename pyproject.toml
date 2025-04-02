@@ -47,7 +47,7 @@ tests = [
     "tox",
     "pyquery",
     "isort",
-    "black",
+    "ruff",
     "django-stubs[compatible-mypy]",
 ]
 docs = [
@@ -131,3 +131,11 @@ django_settings_module = "testapp.settings"
 [[tool.mypy.overrides]]
 module = "django_sendfile"
 ignore_missing_imports = true
+
+[tool.ruff.lint]
+extend-select = [
+    "UP",  # pyupgrade
+    "DJ",  # django
+    "LOG", # logging
+    "G",
+]

@@ -1,10 +1,11 @@
-from typing import Generic, Sequence, TypeVar
+from collections.abc import Sequence
+from typing import Generic, TypeVar
 
 import django.db.models.options
 from django.contrib.admin import AdminSite
 from django.contrib.auth import get_permission_codename
 from django.db import models
-from django.urls import re_path
+from django.urls import path
 
 from .fields import PrivateMediaFieldMixin
 from .views import PrivateMediaView
@@ -111,19 +112,14 @@ class PrivateMediaMixin(Generic[_ModelT]):
             # TODO: don't nuke potential other overrides?
             Widget = self.private_media_file_widget
             field.widget = Widget(
-                url_name="admin:%s" % view_name,
+                url_name=f"admin:{view_name}",
                 download_allowed=db_field.name
                 not in self.private_media_no_download_fields,
             )
         return field
 
     def _get_private_media_view_name(self, field: str) -> str:
-        name = "%(app_label)s_%(model_name)s_%(field)s" % {
-            "app_label": self.opts.app_label,
-            "model_name": self.opts.model_name,
-            "field": field,
-        }
-        return name
+        return f"{self.opts.app_label}_{self.opts.model_name}_{field}"
 
     def get_urls(self):
         default = super().get_urls()  # type: ignore
@@ -134,8 +130,8 @@ class PrivateMediaMixin(Generic[_ModelT]):
                 continue
             view = self.get_private_media_view(field)
             extra.append(
-                re_path(
-                    r"^(?P<pk>\d+)/%s/$" % field,
+                path(
+                    f"<int:pk>/{field}/",
                     self.admin_site.admin_view(view),
                     name=self._get_private_media_view_name(field),
                 )

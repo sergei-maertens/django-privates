@@ -4,7 +4,9 @@ Django-privates
 
 Simple private media integration for Django.
 
-|build-status| |linting| |coverage| |docs| |python-versions| |django-versions| |pypi-version|
+|build-status| |linting| |coverage| |docs| |ruff|
+
+|python-versions| |django-versions| |pypi-version|
 
 What does it do?
 ================
@@ -46,5 +48,9 @@ The installation and usage `documentation`_ is hosted on ReadTheDocs.
 
 .. |pypi-version| image:: https://img.shields.io/pypi/v/django-privates.svg
     :target: https://pypi.org/project/django-privates/
+
+.. |ruff| image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
+    :target: https://github.com/astral-sh/ruff
+    :alt: Ruff
 
 .. _documentation: https://django-privates.readthedocs.io/

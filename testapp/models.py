@@ -1,3 +1,4 @@
+# ruff: noqa: DJ008
 from django.db import models
 
 from privates.fields import PrivateMediaFileField, PrivateMediaImageField

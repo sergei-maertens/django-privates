@@ -18,9 +18,8 @@ jobs:
       matrix:
         toxenv:
           - isort
-          - black
+          - ruff
           - docs
-          # - flake8
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
