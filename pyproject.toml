@@ -46,7 +46,6 @@ tests = [
     "pytest-cov",
     "tox",
     "pyquery",
-    "isort",
     "ruff",
     "django-stubs[compatible-mypy]",
 ]
@@ -64,14 +63,6 @@ version = {attr = "privates.__version__"}
 [tool.setuptools.packages.find]
 include = ["privates*"]
 namespaces = true
-
-[tool.isort]
-profile = "black"
-combine_as_imports = true
-skip = ["env", ".tox", ".history", ".eggs"]
-known_django = "django"
-known_first_party="privates"
-sections=["FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -138,4 +129,19 @@ extend-select = [
     "DJ",  # django
     "LOG", # logging
     "G",
+    "I",   # isort
 ]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+section-order = [
+    "future",
+    "standard-library",
+    "django",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
+
+[tool.ruff.lint.isort.sections]
+"django" = ["django"]
