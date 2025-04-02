@@ -8,7 +8,7 @@ Welcome to Django Privates's documentation!
 
 Simple private media integration for Django.
 
-|build-status| |linting| |coverage|
+|build-status| |linting| |coverage| |ruff|
 
 |python-versions| |django-versions| |pypi-version|
 
@@ -63,6 +63,10 @@ Indices and tables
 
 .. |pypi-version| image:: https://img.shields.io/pypi/v/django-privates.svg
     :target: https://pypi.org/project/django-privates/
+
+.. |ruff| image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
+    :target: https://github.com/astral-sh/ruff
+    :alt: Ruff
 
 .. _sendfile: https://pypi.org/project/django-sendfile2/
 
