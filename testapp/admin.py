@@ -1,4 +1,7 @@
+import uuid
+
 from django.contrib import admin
+from django.core.cache import cache
 
 from privates.admin import PrivateMediaMixin
 
@@ -25,3 +28,8 @@ class File3Admin(PrivateMediaMixin, admin.ModelAdmin):
 @admin.register(File4)
 class File4Admin(PrivateMediaMixin, admin.ModelAdmin):
     readonly_fields = ("file",)
+
+    def save_model(self, request, obj, form, change) -> None:
+        super().save_model(request, obj, form, change)
+        # caching triggers pickle under the hood
+        cache.set(str(uuid.uuid4()), obj)
