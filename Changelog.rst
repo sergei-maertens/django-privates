@@ -2,6 +2,14 @@
 Changelog
 =========
 
+3.1.1 (2025-07-09)
+==================
+
+Bugfix release.
+
+* [#15] Fixed 3.0.0 regression (because of #10) where it was no longer possible to
+  pickle model instances that are exposed with the ``PrivateMediaMixin`` in the admin.
+
 3.1.0 (2025-04-02)
 ==================
 

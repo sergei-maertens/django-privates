@@ -71,7 +71,7 @@ testpaths = ["tests"]
 DJANGO_SETTINGS_MODULE = "testapp.settings"
 
 [tool.bumpversion]
-current_version = "3.1.0"
+current_version = "3.1.1"
 files = [
     {filename = "privates/__init__.py"},
     {filename = "docs/conf.py"},
