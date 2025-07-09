@@ -12,18 +12,21 @@ class PrivateMediaFieldFileMixin:
 
     @property
     def url(self) -> str:
+        from .admin import _get_private_media_view_name
+
         django_url = super().url  # type: ignore
 
         readonly_fields = getattr(self.instance, "_private_media_readonly_fields", None)
-        model_admin = getattr(self.instance, "_private_media_model_admin", None)
-        if not readonly_fields or not model_admin:
+        if not readonly_fields:
             return django_url
 
         field_name = self.field.name  # type: ignore
         if field_name not in readonly_fields:
             return django_url
 
-        url_name = f"admin:{model_admin._get_private_media_view_name(field_name)}"
+        url_name = (
+            f"admin:{_get_private_media_view_name(self.instance._meta, field_name)}"
+        )
         return reverse(url_name, kwargs={"pk": self.instance.pk})
 
 

@@ -5,13 +5,20 @@ import django.db.models.options
 from django.contrib.admin import AdminSite
 from django.contrib.auth import get_permission_codename
 from django.db import models
+from django.db.models.options import Options
 from django.urls import path
 
 from .fields import PrivateMediaFieldMixin
 from .views import PrivateMediaView
 from .widgets import PrivateFileWidget
 
+__all__ = ["PrivateMediaMixin"]
+
 _ModelT = TypeVar("_ModelT", bound=models.Model)
+
+
+def _get_private_media_view_name(opts: Options, field: str) -> str:
+    return f"{opts.app_label}_{opts.model_name}_{field}"
 
 
 class PrivateMediaMixin(Generic[_ModelT]):
@@ -108,7 +115,7 @@ class PrivateMediaMixin(Generic[_ModelT]):
         private_media_fields = self.get_private_media_fields()
         if db_field.name in private_media_fields:
             # replace the widget
-            view_name = self._get_private_media_view_name(db_field.name)
+            view_name = _get_private_media_view_name(self.opts, db_field.name)
             # TODO: don't nuke potential other overrides?
             Widget = self.private_media_file_widget
             field.widget = Widget(
@@ -117,9 +124,6 @@ class PrivateMediaMixin(Generic[_ModelT]):
                 not in self.private_media_no_download_fields,
             )
         return field
-
-    def _get_private_media_view_name(self, field: str) -> str:
-        return f"{self.opts.app_label}_{self.opts.model_name}_{field}"
 
     def get_urls(self):
         default = super().get_urls()  # type: ignore
@@ -133,7 +137,7 @@ class PrivateMediaMixin(Generic[_ModelT]):
                 path(
                     f"<int:pk>/{field}/",
                     self.admin_site.admin_view(view),
-                    name=self._get_private_media_view_name(field),
+                    name=_get_private_media_view_name(self.opts, field),
                 )
             )
 
@@ -163,6 +167,5 @@ class PrivateMediaMixin(Generic[_ModelT]):
             for field in self.get_private_media_fields()
             if field in readonly_fields
         ]
-        obj._private_media_model_admin = self
 
         return obj

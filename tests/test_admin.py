@@ -1,10 +1,12 @@
 from io import BytesIO
 
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from django.urls.exceptions import NoReverseMatch
 from django.utils.translation import gettext_lazy as _
 
 import pytest
+from PIL import Image
 from pyquery import PyQuery as pq
 
 
@@ -92,3 +94,31 @@ def test_admin_readonly_field(admin_client, private_file):
     assert download_link.attr("href") == reverse(
         "admin:testapp_file4_file", args=(private_file.pk,)
     )
+
+
+@pytest.mark.django_db
+def test_admin_readonly_field_can_still_cache_object(
+    admin_client, private_file, settings
+):
+    settings.CACHES = {
+        "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}
+    }
+    # Regression test for #15 - the readonly field workaround introduced a regression
+    # leading to the model instance no longer being able to be pickled.
+    url = reverse("admin:testapp_file4_change", args=(private_file.pk,))
+    png_image = Image.new("RGB", (1, 1), color=(255, 255, 255))
+    png_file = BytesIO()
+    png_image.save(png_file, format="PNG")
+    png_file.seek(0)
+
+    # submit the form to modify the object, which triggers the cache hook, which
+    # triggers the pickling error
+    response = admin_client.post(
+        url,
+        {
+            "file": BytesIO(b""),
+            "image": SimpleUploadedFile("pixel.png", png_file.read()),
+        },
+    )
+
+    assert response.status_code == 302
