@@ -8,6 +8,7 @@ from django.db import models
 from django.urls import path
 
 from .fields import PrivateMediaFieldMixin
+from .utils import get_private_media_view_name
 from .views import PrivateMediaView
 from .widgets import PrivateFileWidget
 
@@ -108,7 +109,9 @@ class PrivateMediaMixin(Generic[_ModelT]):
         private_media_fields = self.get_private_media_fields()
         if db_field.name in private_media_fields:
             # replace the widget
-            view_name = self._get_private_media_view_name(db_field.name)
+            view_name = get_private_media_view_name(
+                self.opts.app_label, self.opts.model_name, db_field.name
+            )
             # TODO: don't nuke potential other overrides?
             Widget = self.private_media_file_widget
             field.widget = Widget(
@@ -117,9 +120,6 @@ class PrivateMediaMixin(Generic[_ModelT]):
                 not in self.private_media_no_download_fields,
             )
         return field
-
-    def _get_private_media_view_name(self, field: str) -> str:
-        return f"{self.opts.app_label}_{self.opts.model_name}_{field}"
 
     def get_urls(self):
         default = super().get_urls()  # type: ignore
@@ -133,7 +133,7 @@ class PrivateMediaMixin(Generic[_ModelT]):
                 path(
                     f"<int:pk>/{field}/",
                     self.admin_site.admin_view(view),
-                    name=self._get_private_media_view_name(field),
+                    name=get_private_media_view_name(self.opts.app_label, self.opts.model_name, field),
                 )
             )
 
@@ -163,6 +163,8 @@ class PrivateMediaMixin(Generic[_ModelT]):
             for field in self.get_private_media_fields()
             if field in readonly_fields
         ]
-        obj._private_media_model_admin = self
+
+        obj._private_admin_app_label = self.opts.app_label
+        obj._private_admin_model_name = self.opts.model_name
 
         return obj
