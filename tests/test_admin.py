@@ -1,11 +1,20 @@
 from io import BytesIO
+from pathlib import Path
 
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
+from django.core.cache import DEFAULT_CACHE_ALIAS, caches
+from django.core.files.uploadedfile import UploadedFile
 from django.urls import reverse
 from django.urls.exceptions import NoReverseMatch
 from django.utils.translation import gettext_lazy as _
 
 import pytest
 from pyquery import PyQuery as pq
+
+from testapp.models import CacheModel, File
+
+TEST_FILE_DIR = Path(__file__).parent.resolve() / "files"
 
 
 @pytest.mark.django_db
@@ -46,8 +55,44 @@ def test_admin_widget_url_empty_initial(admin_client):
 @pytest.mark.django_db
 def test_admin_widget_url_inmemoryfile(admin_client):
     url = reverse("admin:testapp_file_add")
-    response = admin_client.post(url, {"file": BytesIO(b"")}, follow=True)
+
+    with open(TEST_FILE_DIR / "image.jpg", "rb") as image_file:
+        response = admin_client.post(
+            url,
+            {
+                "file": BytesIO(b"foo"),
+                "image": UploadedFile(file=image_file, name="image.jpg"),
+            },
+            follow=True
+        )
+
+    assert response.redirect_chain
     assert response.status_code == 200
+    assert File.objects.count() == 1
+
+
+@pytest.mark.django_db
+def test_admin_widget_cached_instance(client, django_user_model):
+    admin_user = django_user_model.objects.create(is_staff=True)
+    content_type = ContentType.objects.get_for_model(CacheModel)
+    permission = Permission.objects.get(
+        codename="add_cachemodel", content_type=content_type
+    )
+    admin_user.user_permissions.add(permission)
+
+    client.force_login(admin_user)
+
+    url = reverse("admin:testapp_cachemodel_add")
+    response = client.post(url, {"file": BytesIO(b"foo")}, follow=True)
+
+    assert response.redirect_chain
+    assert response.status_code == 200
+
+    cache = caches[DEFAULT_CACHE_ALIAS]
+
+    instance = CacheModel.objects.get()
+
+    assert instance == cache.get("cache-model")
 
 
 @pytest.mark.django_db

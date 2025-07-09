@@ -1,8 +1,10 @@
+from pickle import UnpicklingError
+
 from django.contrib import admin
 
 from privates.admin import PrivateMediaMixin
 
-from .models import File, File2, File3, File4
+from .models import CacheModel, File, File2, File3, File4
 
 
 @admin.register(File)
@@ -25,3 +27,13 @@ class File3Admin(PrivateMediaMixin, admin.ModelAdmin):
 @admin.register(File4)
 class File4Admin(PrivateMediaMixin, admin.ModelAdmin):
     readonly_fields = ("file",)
+
+
+@admin.register(CacheModel)
+class CacheModelAdmin(PrivateMediaMixin, admin.ModelAdmin):
+    private_media_fields = ("file",)
+    readonly_fields = ("file",)
+
+    # TODO: raise this at the correct moment/place?
+    def __getstate__(self) -> dict:
+        raise UnpicklingError
