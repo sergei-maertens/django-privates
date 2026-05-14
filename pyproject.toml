@@ -121,7 +121,7 @@ plugins = ["mypy_django_plugin.main"]
 django_settings_module = "testapp.settings"
 
 [[tool.mypy.overrides]]
-module = "django_sendfile"
+module = "django_sendfile.*"
 ignore_missing_imports = true
 
 [tool.ruff.lint]

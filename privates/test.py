@@ -34,6 +34,8 @@ def sendfile(request, filepath, **kwargs):
 
 def temp_private_root(setup_sendfile_backend: bool = True):
     _original = copy.deepcopy(settings.STORAGES)
+    assert isinstance(_original, dict)
+    assert isinstance(_original[STORAGE_ALIAS], dict)
     new_storages = {
         **_original,
         STORAGE_ALIAS: {
