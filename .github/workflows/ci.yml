@@ -57,10 +57,6 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
 
     steps:
-      - name: Install OS packages
-        run: |
-          sudo apt-get update
-          sudo apt-get install --yes gettext
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
@@ -72,13 +68,6 @@ jobs:
           version: "0.11.14"
           enable-cache: false
 
-      - name: Install Django and compile i18n messages
-        run: |
-          uv pip install --system '.[tests]'
-          django-admin compilemessages
-        env:
-          DJANGO_SETTINGS_MODULE: testapp.settings
-          PYTHONPATH: .
       - name: Build sdist and wheel
         run: |
           uv pip install --system build --upgrade
