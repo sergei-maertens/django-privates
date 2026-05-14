@@ -8,38 +8,41 @@ on:
     tags:
       - '*'
   pull_request:
+  schedule:
+    - cron: "57 3 3 * *"
   workflow_dispatch:
+
+permissions: {}
 
 jobs:
   tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ['3.10', '3.11', '3.12']
-        django: ['4.2', '5.2']
-        include:
-          - python: '3.13'
-            django: '5.2'
+        python: ['3.12', '3.13', '3.14']
+        django: ['5.2', '6.0']
 
     name: Run the test suite (Python ${{ matrix.python }}, Django ${{ matrix.django }})
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: ${{ matrix.python }}
 
       - name: Install dependencies
-        run: pip install tox tox-gh-actions
+        run: pip install tox tox-gh-actions tox-uv
 
       - name: Run tests
-        run: tox
+        run: tox --colored=yes
         env:
           PYTHON_VERSION: ${{ matrix.python }}
           DJANGO: ${{ matrix.django }}
 
       - name: Publish coverage report
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
@@ -54,15 +57,32 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Install OS packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes gettext
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          python-version: '3.10'
+          persist-credentials: false
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version-file: 'pyproject.toml'
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.14"
+          enable-cache: false
 
+      - name: Install Django and compile i18n messages
+        run: |
+          uv pip install --system '.[tests]'
+          django-admin compilemessages
+        env:
+          DJANGO_SETTINGS_MODULE: testapp.settings
+          PYTHONPATH: .
       - name: Build sdist and wheel
         run: |
-          pip install build --upgrade
+          uv pip install --system build --upgrade
           python -m build
 
       - name: Publish a Python distribution to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b  # v1.14.0

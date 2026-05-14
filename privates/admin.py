@@ -1,8 +1,7 @@
 from collections.abc import Sequence
-from typing import Generic, TypeVar
+from typing import TYPE_CHECKING
 
-import django.db.models.options
-from django.contrib.admin import AdminSite
+from django.contrib.admin import ModelAdmin
 from django.contrib.auth import get_permission_codename
 from django.db import models
 from django.db.models.options import Options
@@ -14,14 +13,20 @@ from .widgets import PrivateFileWidget
 
 __all__ = ["PrivateMediaMixin"]
 
-_ModelT = TypeVar("_ModelT", bound=models.Model)
+
+if TYPE_CHECKING:  # pragma: no cover
+    MixinBase = ModelAdmin
+else:
+
+    class MixinBase[T]:
+        pass
 
 
 def _get_private_media_view_name(opts: Options, field: str) -> str:
     return f"{opts.app_label}_{opts.model_name}_{field}"
 
 
-class PrivateMediaMixin(Generic[_ModelT]):
+class PrivateMediaMixin[M: models.Model](MixinBase[M]):
     """
     Enable downloading private-media model fields in the admin.
 
@@ -49,10 +54,6 @@ class PrivateMediaMixin(Generic[_ModelT]):
     private_media_file_widget = PrivateFileWidget
     # options passed through to sendfile, as a dict
     private_media_view_options: dict | None = None
-
-    admin_site: AdminSite
-    model: type[_ModelT]
-    opts: django.db.models.options.Options
 
     def get_private_media_fields(self) -> Sequence[str]:
         """
@@ -111,13 +112,14 @@ class PrivateMediaMixin(Generic[_ModelT]):
         )
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
-        field = super().formfield_for_dbfield(db_field, request, **kwargs)  # type: ignore
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
         private_media_fields = self.get_private_media_fields()
         if db_field.name in private_media_fields:
             # replace the widget
             view_name = _get_private_media_view_name(self.opts, db_field.name)
             # TODO: don't nuke potential other overrides?
             Widget = self.private_media_file_widget
+            assert field is not None
             field.widget = Widget(
                 url_name=f"admin:{view_name}",
                 download_allowed=db_field.name
@@ -126,7 +128,7 @@ class PrivateMediaMixin(Generic[_ModelT]):
         return field
 
     def get_urls(self):
-        default = super().get_urls()  # type: ignore
+        default = super().get_urls()
 
         extra = []
         for field in self.get_private_media_fields():
@@ -159,10 +161,10 @@ class PrivateMediaMixin(Generic[_ModelT]):
         ``FieldFile`` class/attr_class can introspect this and conditionally build up
         the correct URL.
         """
-        obj = super().get_object(request, object_id, from_field=from_field)  # type: ignore
+        obj = super().get_object(request, object_id, from_field=from_field)
 
-        readonly_fields = self.get_readonly_fields(request, obj=obj)  # type: ignore
-        obj._private_media_readonly_fields = [
+        readonly_fields = self.get_readonly_fields(request, obj=obj)
+        obj._private_media_readonly_fields = [  # type: ignore
             field
             for field in self.get_private_media_fields()
             if field in readonly_fields
