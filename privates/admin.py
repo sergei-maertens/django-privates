@@ -1,5 +1,4 @@
 from collections.abc import Sequence
-from typing import Generic, TypeVar
 
 import django.db.models.options
 from django.contrib.admin import AdminSite
@@ -14,14 +13,12 @@ from .widgets import PrivateFileWidget
 
 __all__ = ["PrivateMediaMixin"]
 
-_ModelT = TypeVar("_ModelT", bound=models.Model)
-
 
 def _get_private_media_view_name(opts: Options, field: str) -> str:
     return f"{opts.app_label}_{opts.model_name}_{field}"
 
 
-class PrivateMediaMixin(Generic[_ModelT]):
+class PrivateMediaMixin[M: models.Model]:
     """
     Enable downloading private-media model fields in the admin.
 
@@ -51,7 +48,7 @@ class PrivateMediaMixin(Generic[_ModelT]):
     private_media_view_options: dict | None = None
 
     admin_site: AdminSite
-    model: type[_ModelT]
+    model: type[M]
     opts: django.db.models.options.Options
 
     def get_private_media_fields(self) -> Sequence[str]:
