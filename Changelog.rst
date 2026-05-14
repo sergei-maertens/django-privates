@@ -2,6 +2,62 @@
 Changelog
 =========
 
+4.0.0 (2026-05-14)
+==================
+
+Maintenance and refactor release.
+
+We now use Django's built-in ``STORAGES`` setting, requiring breaking changes.
+
+**Breaking changes 💥**
+
+* Dropped support for Django 4.2.
+* Dropped support for Python 3.11 and older.
+* Reworked library to use ``settings.STORAGES``. Upgrading is mostly a boilerplate
+  settings annoyance. For the least friction:
+
+  .. code-block:: diff
+
+        PRIVATE_MEDIA_ROOT = "/path/to/private-media/"
+        PRIVATE_MEDIA_URL = "/private_media/"
+        SENDFILE_ROOT = PRIVATE_MEDIA_ROOT
+        SENDFILE_URL = PRIVATE_MEDIA_URL
+      + STORAGES = {
+      +     "default": {
+      +         "BACKEND": "django.core.files.storage.FileSystemStorage",
+      +     },
+      +     "staticfiles": {
+      +         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+      +     },
+      +     "privates": {
+      +         "BACKEND": "django.core.files.storage.FileSystemStorage",
+      +         "OPTIONS": {
+      +             "location": PRIVATE_MEDIA_ROOT,
+      +             "base_url": PRIVATE_MEDIA_URL,
+      +         },
+      +     },
+      + }
+
+  .. note:: The ``PRIVATE_MEDIA_*`` settings are all gone - you can restructure this
+     code however you like.
+
+**New features**
+
+* Confirmed support for Django 6.0 and Python 3.14.
+* Improved type annotations.
+* [#18] Support configuration via the ``STORAGES`` setting.
+* [#18] Added system checks that report broken configuration.
+
+**Bugfixes**
+
+* [#8] The ``privates.test.temp_private_root`` testing helper now sets up an in-memory
+  storage that should no longer pollute the file system.
+
+**Project maintenance**
+
+* Hardened the CI workflows to reduce supply chain attack risks.
+* CI now runs on a weekly basis to catch upstream changes early.
+
 3.1.1 (2025-07-09)
 ==================
 
