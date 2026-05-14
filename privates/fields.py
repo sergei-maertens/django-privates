@@ -45,9 +45,10 @@ class PrivateMediaFieldMixin:
     Use the mixin in combination with django's ``FileField`` class or derivatives to
     set up the (default) private media storage.
 
-    :arg storage: the (private) file storage to use. This defaults to django-privates'
-      default private storage, but you can subclass these and provide your own. See the
-      upstream storage documentation: https://docs.djangoproject.com/en/4.2/topics/files/#file-storage
+    :arg storage: the (private) file storage to use. Expects a ``"privates"`` storage
+      to be configured in your ``STORAGES`` setting. You can override this with a custom
+      storage, see the upstream storage documentation:
+      https://docs.djangoproject.com/en/stable/topics/files/#file-storage
     """
 
     def __init__(self, *args, **kwargs):
