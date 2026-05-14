@@ -8,11 +8,25 @@ Django settings:
 
 .. code-block:: python
 
-    PRIVATE_MEDIA_ROOT = "/path/to/files/on/disk/private_media/"
-    PRIVATE_MEDIA_URL = "/private-media/"
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+        "privates": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+            "OPTIONS": {
+                "location": "/path/to/files/on/disk/private_media/",
+                "base_url": "/private-media/",
+            },
+        },
+    }
+
     SENDFILE_BACKEND = "django_sendfile.backends.nginx"
-    SENDFILE_ROOT = PRIVATE_MEDIA_ROOT
-    SENDFILE_URL = PRIVATE_MEDIA_URL
+    SENDFILE_ROOT = "/path/to/files/on/disk/private_media/"
+    SENDFILE_URL = "/private-media/"
 
 Nginx configuration:
 

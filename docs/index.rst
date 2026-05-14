@@ -36,6 +36,7 @@ Features
    quickstart
    examples
    reference
+   changelog
 
 
 Indices and tables

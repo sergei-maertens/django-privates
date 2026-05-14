@@ -70,7 +70,7 @@ testpaths = ["tests"]
 DJANGO_SETTINGS_MODULE = "testapp.settings"
 
 [tool.bumpversion]
-current_version = "3.1.1"
+current_version = "4.0.0"
 files = [
     {filename = "privates/__init__.py"},
     {filename = "docs/conf.py"},
@@ -121,7 +121,7 @@ plugins = ["mypy_django_plugin.main"]
 django_settings_module = "testapp.settings"
 
 [[tool.mypy.overrides]]
-module = "django_sendfile"
+module = "django_sendfile.*"
 ignore_missing_imports = true
 
 [tool.ruff.lint]
