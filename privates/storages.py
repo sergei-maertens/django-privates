@@ -29,4 +29,9 @@ class PrivateMediaStorage(LazyObject):
 private_media_storage = PrivateMediaStorage()
 """
 The default (lazy) private media storage.
+
+This is kept lazy so that ``override_settings`` with ``STORAGES`` works, per the
+Django docs: https://docs.djangoproject.com/en/5.2/topics/files/#file-storage,
+though it requires a signal receiver on setting_changed - see:
+https://code.djangoproject.com/ticket/36504
 """
