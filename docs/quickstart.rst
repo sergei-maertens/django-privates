@@ -12,7 +12,7 @@ Installation
     pip install django-privates
 
 
-#. Add the app to your ``INSTALLED_APPS`` for admin integration:
+#. Add the app to your ``INSTALLED_APPS`` for admin integration and system checks:
 
 .. code-block:: python
 
@@ -27,22 +27,62 @@ Installation
 Settings
 --------
 
-You need to set the following settings:
+We use the ``STORAGES`` setting introduced since Django 4.2, and expect a storage to
+be configured with the ``"privates"`` key. Additionally, the ``SENDFILE_`` settings need
+to be defined. For example:
 
-* ``PRIVATE_MEDIA_ROOT``: private equivalent of ``MEDIA_ROOT`` - the base location
-  where private media files will be stored.
+.. code-block:: python
+    :linenos:
+    :emphasize-lines: 10-16
 
-* ``PRIVATE_MEDIA_URL``: private equivalent of ``MEDIA_URL``. Note that your webserver
-  must be configured appropriately for this, see the `sendfile`_ documentation. Your
-  webserver may **not** directly serve these URLs, otherwise files can be downloaded
-  without authentication.
+    STORAGES = {
+        # default and staticfiles are the Django defaults
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+        # add privates
+        "privates": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+            "OPTIONS": {
+                "location": BASE_DIR / "private_media",
+                "base_url": "/protected/",
+            },
+        },
+    }
 
-* ``SENDFILE_BACKEND``: depends on your webserver, see the `sendfile`_
-  documentation.
+    SENDFILE_BACKEND = "django_sendfile.backends.nginx"
+    SENDFILE_ROOT = BASE_DIR / "private_media"  # same as the storage location
+    SENDFILE_URL = "/protected/"  # same as the storage base_url
 
-* ``SENDFILE_ROOT``: should be set to ``PRIVATE_MEDIA_ROOT``.
+The meaning of the backend options is:
 
-* ``SENDFILE_URL``: should be set to ``PRIVATE_MEDIA_URL``.
+``location``
+    The private equivalent of ``MEDIA_ROOT`` - the base location where private media
+    files will be stored.
+
+``base_url``
+    The private equivalent of ``MEDIA_URL``. Note that your webserver must be configured
+    appropriately for this, see the `sendfile`_ documentation. Your webserver may
+    **not** directly serve these URLs, otherwise files can be downloaded without
+    authentication.
+
+.. warning::
+    It's important that you specify the ``location`` and ``base_url`` options, otherwise
+    Django will fall back to ``settings.MEDIA_ROOT`` and ``settings.MEDIA_URL`` which will
+    typically *publicly* expose your files.
+
+The sendfile settings are important to actually serve the files correctly:
+
+* ``SENDFILE_BACKEND``: depends on your webserver, see the `sendfile`_ documentation.
+
+* ``SENDFILE_ROOT``: should be set to the storage location, as the library will resolve
+  files from that path.
+
+* ``SENDFILE_URL``: should be set to the storage base_url, so the webserver can match
+  the location block to serve the file.
 
 URLs
 ----
