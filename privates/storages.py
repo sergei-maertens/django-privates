@@ -1,49 +1,37 @@
-from django.conf import settings
-from django.core.files.storage import FileSystemStorage
-from django.utils.functional import LazyObject, cached_property
+from typing import Final
+
+from django.core.exceptions import ImproperlyConfigured
+from django.core.files.storage import InvalidStorageError, storages
+from django.utils.functional import LazyObject
+
+STORAGE_ALIAS: Final = "privates"
 
 
-class PrivateMediaFileSystemStorage(FileSystemStorage):
-    """
-    Storage that puts files in the private media folder that isn't
-    globally available.
-
-    * ``settings.PRIVATE_MEDIA_ROOT`` is used to determine where to write the files
-    * ``settings.PRIVATE_MEDIA_URL`` is the internal URL used for files.
-    """
-
-    _location: str | None
-    _base_url: str | None
-
-    def _clear_cached_properties(self, setting, **kwargs):
-        super()._clear_cached_properties(setting, **kwargs)
-        if setting == "PRIVATE_MEDIA_ROOT":
-            self.__dict__.pop("base_location", None)
-            self.__dict__.pop("location", None)
-        elif setting == "PRIVATE_MEDIA_URL":
-            self.__dict__.pop("base_url", None)
-
-    @cached_property
-    def base_location(self):
-        return self._value_or_setting(self._location, settings.PRIVATE_MEDIA_ROOT)
-
-    @cached_property
-    def base_url(self):
-        if self._base_url is not None and not self._base_url.endswith("/"):
-            self._base_url += "/"
-        return self._value_or_setting(self._base_url, settings.PRIVATE_MEDIA_URL)
+class PrivateMediaFileSystemStorage:
+    pass  # only here for historical migrations support
 
 
 class PrivateMediaStorage(LazyObject):
     """
-    Lazily initialized :class:`PrivateMediaFileSystemStorage`
+    Look up the privates storage from the settings.
     """
 
     def _setup(self):
-        self._wrapped = PrivateMediaFileSystemStorage()
+        try:
+            self._wrapped = storages[STORAGE_ALIAS]
+        except InvalidStorageError as exc:
+            raise ImproperlyConfigured(
+                f"Could not find the '{STORAGE_ALIAS}' storage. Did you configure it "
+                "in the STORAGES setting?"
+            ) from exc
 
 
 private_media_storage = PrivateMediaStorage()
 """
-A default (lazy) private media storage, configured via Django settings.
+The default (lazy) private media storage.
+
+This is kept lazy so that ``override_settings`` with ``STORAGES`` works, per the
+Django docs: https://docs.djangoproject.com/en/5.2/topics/files/#file-storage,
+though it requires a signal receiver on setting_changed - see:
+https://code.djangoproject.com/ticket/36504
 """
