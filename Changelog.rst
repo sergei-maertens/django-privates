@@ -2,6 +2,23 @@
 Changelog
 =========
 
+4.0.1 (2026-05-15)
+==================
+
+Small quality of life bugfix release.
+
+* The ``temp_private_root`` test helper is now more versatile for different situations.
+
+  - By default, it will reset the in-memory storage between tests when used as a class
+    decorator, however you can opt out of this behaviour with the
+    ``reset_storage=False`` parameter. This can be useful when setting up test data
+    with private file fields in the ``setUpTestData`` class method.
+  - By default, it injects a custom ``SENDFILE_BACKEND`` to serve files from the
+    in-memory storage. You can opt-out of this if you have other/outer
+    ``@override_settings`` decorators that override this setting.
+
+* Fixed broken ReadTheDocs configuration.
+
 4.0.0 (2026-05-14)
 ==================
 
