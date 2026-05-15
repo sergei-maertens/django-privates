@@ -2,6 +2,14 @@
 Changelog
 =========
 
+4.0.2 (2026-05-15)
+==================
+
+Bugfix release.
+
+* Fixed a regression in the migration serialization which would put absolute file
+  system paths into migration files.
+
 4.0.1 (2026-05-15)
 ==================
 
