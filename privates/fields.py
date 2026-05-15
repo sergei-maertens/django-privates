@@ -55,6 +55,13 @@ class PrivateMediaFieldMixin:
         kwargs.setdefault("storage", private_media_storage)
         super().__init__(*args, **kwargs)
 
+    def deconstruct(self):
+        name, path, args, kwargs = super().deconstruct()
+        storage = getattr(self, "_storage_callable", self.storage)
+        if storage is private_media_storage and "storage" in kwargs:
+            del kwargs["storage"]
+        return name, path, args, kwargs
+
 
 class PrivateMediaFileField(PrivateMediaFieldMixin, FileField):
     """
