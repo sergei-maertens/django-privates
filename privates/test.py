@@ -2,10 +2,13 @@ import copy
 
 from django.conf import settings
 from django.core.files import File
+from django.core.files.storage import InMemoryStorage
+from django.core.files.storage.memory import InMemoryDirNode  # type: ignore
 from django.core.signals import setting_changed
 from django.dispatch import receiver
 from django.http import HttpResponse
 from django.test import override_settings
+from django.test.testcases import SimpleTestCase
 from django.utils.functional import empty
 
 from django_sendfile.utils import _get_sendfile
@@ -32,20 +35,42 @@ def sendfile(request, filepath, **kwargs):
     return response
 
 
-def temp_private_root():
-    _original = copy.deepcopy(settings.STORAGES)
-    assert isinstance(_original, dict)
-    assert isinstance(_original[STORAGE_ALIAS], dict)
-    new_storages = {
-        **_original,
-        STORAGE_ALIAS: {
-            "BACKEND": "django.core.files.storage.InMemoryStorage",
-            "OPTIONS": _original[STORAGE_ALIAS].get("OPTIONS", {}),
-        },
-    }
-    return override_settings(
-        STORAGES=new_storages,
-        # files don't exist on disk when using the the inmemorystorage
-        SENDFILE_CHECK_FILE_EXISTS=False,
-        SENDFILE_BACKEND=__name__,
-    )
+class temp_private_root(override_settings):
+    def __init__(self):
+        _original = copy.deepcopy(settings.STORAGES)
+        assert isinstance(_original, dict)
+        assert isinstance(_original[STORAGE_ALIAS], dict)
+        new_storages = {
+            **_original,
+            STORAGE_ALIAS: {
+                "BACKEND": "django.core.files.storage.InMemoryStorage",
+                "OPTIONS": _original[STORAGE_ALIAS].get("OPTIONS", {}),
+            },
+        }
+        super().__init__(
+            STORAGES=new_storages,
+            # files don't exist on disk when using the the inmemorystorage
+            SENDFILE_CHECK_FILE_EXISTS=False,
+            SENDFILE_BACKEND=__name__,
+        )
+
+    def decorate_class(self, cls):
+        cls = super().decorate_class(cls)
+
+        if not issubclass(cls, SimpleTestCase):
+            raise TypeError("Can only decorate subclasses of SimpleTestCase")
+
+        decorated_setUp = cls.setUp
+
+        def setUp(inner_self: SimpleTestCase):
+            decorated_setUp(inner_self)
+            inner_self.addCleanup(clear_storage)
+
+        def clear_storage():
+            if not isinstance(private_media_storage, InMemoryStorage):
+                return
+            # reset the root node
+            private_media_storage._root = InMemoryDirNode()
+
+        cls.setUp = setUp
+        return cls
