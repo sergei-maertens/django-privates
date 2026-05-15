@@ -21,6 +21,12 @@ Admin
 .. automodule:: privates.admin
    :members:
 
+Testing helpers
+---------------
+
+.. automodule:: privates.test
+   :members:
+
 Storages
 --------
 

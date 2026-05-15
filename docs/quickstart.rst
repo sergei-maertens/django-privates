@@ -214,8 +214,7 @@ Testing tools
 =============
 
 To isolate tests, you should clean up any uploaded files generated during
-tests. There is a wrapper around ``django.test.override_settings`` available
-to facilitate this:
+tests. :class:`privates.test.temp_private_root` is available to facilitate this:
 
 .. code-block:: python
 
