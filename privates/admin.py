@@ -163,6 +163,11 @@ class PrivateMediaMixin[M: models.Model](MixinBase[M]):
         """
         obj = super().get_object(request, object_id, from_field=from_field)
 
+        # the object may be None (for example when it has been deleted and we try to
+        # access the specific pk again) according to the parent's class method
+        if not obj:
+            return obj
+
         readonly_fields = self.get_readonly_fields(request, obj=obj)
         obj._private_media_readonly_fields = [  # type: ignore
             field

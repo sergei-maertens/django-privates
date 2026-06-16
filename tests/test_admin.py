@@ -122,3 +122,13 @@ def test_admin_readonly_field_can_still_cache_object(
     )
 
     assert response.status_code == 302
+
+
+@pytest.mark.django_db
+def test_admin_readonly_field_and_missing_obj_is_handled(admin_client):
+    url = reverse("admin:testapp_file4_change", args=(1,))
+    change_page = admin_client.get(url, follow=True)
+    assert change_page.status_code == 200
+    html = change_page.content.decode("utf-8")
+    doc = pq(html)
+    assert "File4 with ID “1” doesn’t exist. Perhaps it was deleted?" in doc.text()
