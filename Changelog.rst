@@ -2,6 +2,13 @@
 Changelog
 =========
 
+4.0.3 (2026-06-16)
+==================
+
+Bugfix release.
+
+* Fixed a crash in the admin when navigating to an object that doesn't exist.
+
 4.0.2 (2026-05-15)
 ==================
 
